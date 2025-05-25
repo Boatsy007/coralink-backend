@@ -9,11 +9,20 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": "",
   "dependencies": {
     "@supabase/supabase-js": "^2.49.8",
+    "cors": "^2.8.5",
     "dotenv": "^16.5.0",
     "express": "^5.1.0",
     "openai": "^4.103.0"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Boatsy007/coralink-backend.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Boatsy007/coralink-backend/issues"
+  },
+  "homepage": "https://github.com/Boatsy007/coralink-backend#readme",
+  "description": ""
 }
