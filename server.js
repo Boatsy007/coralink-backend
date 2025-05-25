@@ -1,7 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import { Configuration, OpenAIApi } from 'openai';
+import OpenAI from 'openai';
 
 dotenv.config();
 
@@ -19,10 +19,9 @@ app.use((req, res, next) => {
 });
 
 // Setup OpenAI
-const configuration = new Configuration({
+const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
-const openai = new OpenAIApi(configuration);
 
 // Coralink route
 app.post('/coralink', async (req, res) => {
@@ -31,12 +30,12 @@ app.post('/coralink', async (req, res) => {
 
     console.log(`Command from ${tradie_id}:`, command);
 
-    const completion = await openai.createChatCompletion({
+    const completion = await openai.chat.completions.create({
       model: 'gpt-4',
       messages: [{ role: 'user', content: command }],
     });
 
-    const reply = completion.data.choices[0].message.content;
+    const reply = completion.choices[0].message.content;
     console.log(`Reply to ${tradie_id}:`, reply);
 
     res.json({ reply });
