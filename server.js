@@ -1,16 +1,52 @@
-require('dotenv').config();
-const express = require('express');
-const { OpenAIApi, Configuration } = require('openai');
-const { createClient } = require('@supabase/supabase-js');
+import express from 'express';
+import cors from 'cors';
+import dotenv from 'dotenv';
+import { Configuration, OpenAIApi } from 'openai';
 
-console.log("🔥 Coralink starting...");
+dotenv.config();
 
 const app = express();
+const PORT = process.env.PORT || 8080;
+
+// Middleware
+app.use(cors());
 app.use(express.json());
 
-// ✅ Everything else goes here...
+// Logging middleware
+app.use((req, res, next) => {
+  console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
+  next();
+});
 
-const PORT = process.env.PORT || 3000;
+// Setup OpenAI
+const configuration = new Configuration({
+  apiKey: process.env.OPENAI_API_KEY,
+});
+const openai = new OpenAIApi(configuration);
+
+// Coralink route
+app.post('/coralink', async (req, res) => {
+  try {
+    const { command, tradie_id } = req.body;
+
+    console.log(`Command from ${tradie_id}:`, command);
+
+    const completion = await openai.createChatCompletion({
+      model: 'gpt-4',
+      messages: [{ role: 'user', content: command }],
+    });
+
+    const reply = completion.data.choices[0].message.content;
+    console.log(`Reply to ${tradie_id}:`, reply);
+
+    res.json({ reply });
+  } catch (error) {
+    console.error('Backend Error:', error);
+    res.status(500).json({ error: 'Something went wrong' });
+  }
+});
+
+// Start server
 app.listen(PORT, () => {
-  console.log(`✅ Coralink is live at http://localhost:${PORT}`);
+  console.log(`Server is running on port ${PORT}`);
 });
