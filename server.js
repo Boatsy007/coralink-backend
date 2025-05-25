@@ -32,7 +32,16 @@ app.post('/coralink', async (req, res) => {
 
     const completion = await openai.chat.completions.create({
       model: 'gpt-4',
-      messages: [{ role: 'user', content: command }],
+      messages: [
+        {
+          role: 'system',
+          content: `You are Cora, a voice-activated assistant built for tradies. You're helpful, casual, and speak like a mate on the job site. Keep replies short, practical, and clear. No fluff, no corporate talk.`
+        },
+        {
+          role: 'user',
+          content: command
+        }
+      ],
     });
 
     const reply = completion.choices[0].message.content;
